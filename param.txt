@@ -1,0 +1,6 @@
+Endpoint (Hostname): database-1.cr5f0qsgifo8.us-west-1.rds.amazonaws.com
+Instance identifier: database-1
+Database name: udapeople
+Username: postgres
+Password: Admin123
+Port: 5432
