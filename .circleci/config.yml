@@ -219,11 +219,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: ~/
-      - run:
-          name: Install tar utility
-          command: |
-            yum install -y tar gzip
+          at: ~/      
       - run:
           name: Install dependencies
           command: |
@@ -234,6 +230,10 @@ jobs:
             apk add --update nodejs
             apk add --update curl
             pip install awscli
+      - run:
+          name: Install tar utility
+          command: |
+            yum install -y tar gzip
       - run:
           name: Get backend url
           command: |
