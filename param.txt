@@ -1,5 +1,5 @@
-Endpoint (Hostname): database-1.cr5f0qsgifo8.us-west-1.rds.amazonaws.com
-Instance identifier: database-1
+Endpoint (Hostname): udapeople.cr5f0qsgifo8.us-west-1.rds.amazonaws.com
+Instance identifier: udapeople
 Database name: udapeople
 Username: postgres
 Password: Admin123
