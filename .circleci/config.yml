@@ -23,16 +23,16 @@ commands:
     steps:
       - run:
           name: Revert migrations
-          # Add when this will run
+          when: on_fail
           command: |
             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
+            export migration =$(curl --request GET https://kvdb.io/QNgwY4RzXZUhJzqKNb5zMq/migration_${CIRCLE_WORKFLOW_ID:0:7})
             SUCCESS = 1
             if(( $SUCCESS==1 )); 
             then
-            #  cd ~/project/backend
-            #  npm install
-            #  Add revert code here. You can find this in the Getting Started section.
-              exit 1
+            cd ~/project/backend
+            npm install
+            npm run migration:revert              
             fi
             
 jobs:
@@ -215,11 +215,15 @@ jobs:
 
   deploy-frontend:
     docker:
-      - image: python:3.7-alpine3.11
+      - image: python:3.7-alpine
     steps:
       - checkout
       - attach_workspace:
-          at: ~/      
+          at: ~/
+      - run:
+          name: Install tar utility
+          command: |
+            apt-get install -y tar           
       - run:
           name: Install dependencies
           command: |
@@ -229,11 +233,7 @@ jobs:
             apk add --update npm
             apk add --update nodejs
             apk add --update curl
-            pip install awscli
-      - run:
-          name: Install tar utility
-          command: |
-            yum install -y tar gzip
+            pip install awscli      
       - run:
           name: Get backend url
           command: |
