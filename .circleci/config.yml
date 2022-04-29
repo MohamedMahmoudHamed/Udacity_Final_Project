@@ -213,72 +213,75 @@ jobs:
       - destroy-environment:
           Workflow_ID: ${CIRCLE_WORKFLOW_ID:0:7}   
 
-  # deploy-frontend:
-  #   docker:
-  #     - image: amazon/aws-cli
-  #   steps:
-  #     - checkout
-  #     - attach_workspace:
-  #         at: ~/
-  #     # - run:
-  #     #     name: Install dependencies
-  #     #     command: |
-  #     #       # your code here
-  #     - run:
-  #         name: Get backend url
-  #         command: |
-  #           export API_URL="http://${BACKEND_AWS_PUBLIC_IP}:3030"
-  #           echo "API_URL = ${API_URL}"
-  #           echo API_URL="http://${BACKEND_AWS_PUBLIC_IP}:3030" >> frontend/.env
-  #           cat frontend/.env
-  #     - run:
-  #         name: Deploy frontend objects
-  #         command: |
-  #           cd frontend
-  #           npm install
-  #           npm run build
-  #           tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
-  #           aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
-  #     - destroy-environment:
-  #         Workflow_ID: ${CIRCLE_WORKFLOW_ID:0:7}   
+  deploy-frontend:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --update ansible
+            apk add --update gzip
+            apk add --update tar
+            apk add --update npm
+            apk add --update nodejs
+            apk add --update curl
+            pip install awscli
+      - run:
+          name: Get backend url
+          command: |
+            export API_URL="http://${BACKEND_AWS_PUBLIC_IP}:3030"
+            echo "API_URL = ${API_URL}"
+            echo API_URL="http://${BACKEND_AWS_PUBLIC_IP}:3030" >> frontend/.env
+            cat frontend/.env
+      - run:
+          name: Deploy frontend objects
+          command: |
+            cd frontend
+            npm install
+            npm run build
+            tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
+            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
+      - destroy-environment:
+          Workflow_ID: ${CIRCLE_WORKFLOW_ID:0:7}   
                     
-  # deploy-backend:
-  #   docker:
-  #     - image: python:3.7-alpine3.11
-  #   steps:
-  #     - checkout
-  #     - add_ssh_keys:
-  #         fingerprints: ["73:4a:c5:1d:3f:1e:a4:69:05:8a:48:ed:ab:b3:2a:33"]
-  #     - attach_workspace:
-  #         at: ~/
-  #     - run:
-  #         name: Install tar utility
-  #         command: |
-  #           yum install -y tar gzip    
-  #     - run:
-  #         name: Install dependencies
-  #         command: |
-  #           apk add --update ansible
-  #     # - run:
-  #     #     name: Install nodejs & npm
-  #     #     command: |
-  #     #       # nodejs
-  #     #       npm install
-  #     - run:
-  #         name: Deploy backend
-  #         command: |
-  #           cd backend
-  #           npm i
-  #           npm run build
-  #           cd ..
-  #           # Zip the directory
-  #           tar -C backend -czvf artifact.tar.gz .
-  #           cd .circleci/ansible
-  #           echo "Contents  of the inventory.txt file is -------"
-  #           cat inventory.txt
-  #           ansible-playbook -i inventory.txt deploy-backend.yml
-  #     - destroy-environment:
-  #         Workflow_ID: ${CIRCLE_WORKFLOW_ID:0:7}  
+  deploy-backend:
+    docker:
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints: ["73:4a:c5:1d:3f:1e:a4:69:05:8a:48:ed:ab:b3:2a:33"]
+      - attach_workspace:
+          at: ~/      
+      - run:
+          name: Install dependencies
+          command: |
+            apk add --update ansible
+            apk add --update gzip
+            apk add --update tar
+            apk add --update npm
+            apk add --update nodejs
+            apk add --update curl
+            pip install awscli      
+      - run:
+          name: Deploy backend
+          command: |
+            cd backend
+            npm i
+            npm run build
+            cd ..
+            # Zip the directory
+            tar -C backend -czvf artifact.tar.gz .
+            cd .circleci/ansible
+            echo "Contents  of the inventory.txt file is -------"
+            cat inventory.txt
+            ansible-playbook -i inventory.txt deploy-backend.yml
+      - destroy-environment:
+          Workflow_ID: ${CIRCLE_WORKFLOW_ID:0:7}  
 
   # smoke-test:
   #   docker:
