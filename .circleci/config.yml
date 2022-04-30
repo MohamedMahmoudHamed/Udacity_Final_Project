@@ -306,7 +306,7 @@ jobs:
             --query 'Reservations[*].Instances[*].PublicIpAddress' \
             --filters "Name=tag:project,Values=udapeople" \
             --output text)
-            export API_URL="http://50.18.147.3:3030"    
+            export API_URL="${BACKEND_PUBLIC_IP}:3030"    
             echo "${API_URL}"            
             if curl -s ${API_URL}/api/status | grep "ok"
             then
@@ -322,9 +322,9 @@ jobs:
             if curl -s ${URL} | grep "Welcome"
             then
               # Change this to 0 after the job fails
-              return 0
+              return 1
             else
-              return 0
+              return 1
             fi
       - destroy-environment:
           Workflow_ID: ${CIRCLE_WORKFLOW_ID:0:7} 
