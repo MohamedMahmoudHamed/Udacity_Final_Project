@@ -218,10 +218,6 @@ jobs:
       - image: python:3.7-alpine3.11
     steps:
       - checkout      
-      # - run:
-      #     name: Install tar utility
-      #     command: |
-      #       yum install -y tar gzip         
       - run:
           name: Install dependencies
           command: |
@@ -285,12 +281,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apk add --update ansible
-            apk add --update gzip
-            apk add --update tar
-            apk add --update npm
-            apk add --update nodejs
-            apk add --update curl
+            apk add --update tar gzip curl nodejs npm ansible zip
             pip install awscli
       - run:
           name: Get backend url
