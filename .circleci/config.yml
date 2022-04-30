@@ -45,6 +45,7 @@ commands:
             --query 'Reservations[*].Instances[*].PublicIpAddress' \
             --filters "Name=tag:project,Values=udapeople" \
             --output text)
+            return BACKEND_PUBLIC_IP
                       
 jobs:
   build-frontend:
