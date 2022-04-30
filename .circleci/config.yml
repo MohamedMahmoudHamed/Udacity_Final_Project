@@ -25,9 +25,8 @@ commands:
           name: Revert migrations
           when: on_fail
           command: |
-            # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
-            export migration =$(curl --request GET https://kvdb.io/QNgwY4RzXZUhJzqKNb5zMq/migration_${CIRCLE_WORKFLOW_ID:0:7})
-            SUCCESS = 1
+            # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable            
+            SUCCESS=$(curl --insecure  https://kvdb.io/9GE4jRtKznmVKRfvdBABBe/migration_<< parameters.workflow_id >>)
             if(( $SUCCESS==1 )); 
             then
             cd ~/project/backend
@@ -257,7 +256,8 @@ jobs:
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
       - destroy-environment:
-          Workflow_ID: ${CIRCLE_WORKFLOW_ID:0:7}   
+          Workflow_ID: ${CIRCLE_WORKFLOW_ID:0:7}
+      - revert-migrations
                     
   deploy-backend:
     docker:
@@ -287,7 +287,8 @@ jobs:
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
       - destroy-environment:
-          Workflow_ID: ${CIRCLE_WORKFLOW_ID:0:7}  
+          Workflow_ID: ${CIRCLE_WORKFLOW_ID:0:7}
+      - revert-migrations
 
   smoke-test:
     docker:
@@ -298,7 +299,18 @@ jobs:
           name: Install dependencies
           command: |
             apk add --update tar gzip curl nodejs npm ansible zip
-            pip install awscli      
+            pip install awscli
+      - run:
+          name: Frontend smoke test.
+          command: |
+            URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-west-1.amazonaws.com/#/employees"            
+            echo ${URL} 
+            if curl -s ${URL} | grep "Welcome"
+            then              
+              return 1
+            else
+              return 1
+            fi   
       - run:
           name: Backend smoke test.
           command: |
@@ -313,20 +325,10 @@ jobs:
               return 0
             else
               return 1
-            fi
-      - run:
-          name: Frontend smoke test.
-          command: |
-            URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-west-1.amazonaws.com/#/employees"            
-            echo ${URL} 
-            if curl -s ${URL} | grep "Welcome"
-            then              
-              return 0
-            else
-              return 1
-            fi
-      # - destroy-environment:
-      #     Workflow_ID: ${CIRCLE_WORKFLOW_ID:0:7} 
+            fi      
+      - destroy-environment:
+          Workflow_ID: ${CIRCLE_WORKFLOW_ID:0:7}
+      - revert-migrations
 
   # cloudfront-update:
   #   docker:
