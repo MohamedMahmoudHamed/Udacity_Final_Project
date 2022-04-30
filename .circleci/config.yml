@@ -35,6 +35,17 @@ commands:
             npm run migration:revert              
             fi
             
+  get-backend-ip:
+    description: get backend IP.     
+    steps:
+      - run:
+          name: get backend IP          
+          command: |
+            BACKEND_PUBLIC_IP=$(aws ec2 describe-instances \
+            --query 'Reservations[*].Instances[*].PublicIpAddress' \
+            --filters "Name=tag:project,Values=udapeople" \
+            --output text)
+                      
 jobs:
   build-frontend:
     docker:
@@ -156,11 +167,7 @@ jobs:
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"              
       - run:
           name: Add back-end ip to ansible inventory          
-          command: |
-            BACKEND_AWS_PUBLIC_IP=$(aws ec2 describe-instances \
-            --query 'Reservations[*].Instances[*].PublicIpAddress' \
-            --filters "Name=tag:project,Values=udapeople" \
-            --output text)
+          command: |            
             echo ${BACKEND_AWS_PUBLIC_IP} >> .circleci/ansible/inventory.txt
             cat .circleci/ansible/inventory.txt
       - persist_to_workspace:
@@ -225,12 +232,13 @@ jobs:
             pip install awscli
       - attach_workspace:
           at: ~/
+      - get-backend-ip
       - run:
           name: Get backend url
           command: |
-            export API_URL="http://${BACKEND_AWS_PUBLIC_IP}:3030"
+            export API_URL="http://${BACKEND_PUBLIC_IP}:3030"
             echo "API_URL = ${API_URL}"
-            echo API_URL="http://${BACKEND_AWS_PUBLIC_IP}:3030" >> frontend/.env
+            echo API_URL="http://${BACKEND_PUBLIC_IP}:3030" >> frontend/.env
             cat frontend/.env
       - run:
           name: Deploy frontend objects
@@ -283,11 +291,12 @@ jobs:
           command: |
             apk add --update tar gzip curl nodejs npm ansible zip
             pip install awscli
+      - get-backend-ip
       - run:
           name: Get backend url
           command: |
             # Fetch and prepare the BACKEND_IP env var
-            export API_URL="http://${BACKEND_IP}:3030"
+            export API_URL="http://${BACKEND_PUBLIC_IP}:3030"
       - run:
           name: Backend smoke test.
           command: |            
