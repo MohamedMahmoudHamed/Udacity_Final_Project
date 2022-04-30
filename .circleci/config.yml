@@ -215,7 +215,7 @@ jobs:
 
   deploy-frontend:
     docker:
-      - image: python:3.7-alpine
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - attach_workspace:
@@ -223,7 +223,7 @@ jobs:
       - run:
           name: Install tar utility
           command: |
-            apt-get install -y tar           
+            yum install -y tar gzip         
       - run:
           name: Install dependencies
           command: |
