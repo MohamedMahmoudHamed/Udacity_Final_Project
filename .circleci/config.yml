@@ -217,13 +217,11 @@ jobs:
     docker:
       - image: python:3.7-alpine3.11
     steps:
-      - checkout
-      - attach_workspace:
-          at: ~/
+      - checkout      
       - run:
           name: Install tar utility
           command: |
-            sudo yum install -y tar gzip         
+            yum install -y tar gzip         
       - run:
           name: Install dependencies
           command: |
@@ -233,7 +231,9 @@ jobs:
             apk add --update npm
             apk add --update nodejs
             apk add --update curl
-            pip install awscli      
+            pip install awscli
+      - attach_workspace:
+          at: ~/
       - run:
           name: Get backend url
           command: |
@@ -258,9 +258,7 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys:
-          fingerprints: ["73:4a:c5:1d:3f:1e:a4:69:05:8a:48:ed:ab:b3:2a:33"]
-      - attach_workspace:
-          at: ~/      
+          fingerprints: ["73:4a:c5:1d:3f:1e:a4:69:05:8a:48:ed:ab:b3:2a:33"]          
       - run:
           name: Install dependencies
           command: |
@@ -270,7 +268,9 @@ jobs:
             apk add --update npm
             apk add --update nodejs
             apk add --update curl
-            pip install awscli      
+            pip install awscli
+      - attach_workspace:
+          at: ~/
       - run:
           name: Deploy backend
           command: |
