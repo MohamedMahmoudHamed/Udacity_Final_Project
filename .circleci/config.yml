@@ -341,8 +341,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apk add --update curl
-            pip install awscli
+            apk add --update curl            
       - run:
             name: Get old stack workflow id
             command: |
