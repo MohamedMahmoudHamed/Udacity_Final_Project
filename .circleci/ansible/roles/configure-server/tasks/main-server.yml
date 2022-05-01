@@ -9,27 +9,41 @@
   apt:
     upgrade: yes
 
+# - name: remove dependencies that are no longer required
+#   become: true
+#   apt:
+#     autoremove: yes
 
-- name: remove dependencies that are no longer required
-  become: true
-  apt:
-    autoremove: yes
+# - name: "install dependencies."
+#   become: true
+#   apt:
+#     name: ["unzip", "curl"]
+#     state: latest
+#     update_cache: yes
+
+# - name: "Install nodejs & npm"
+#   become: true
+#   shell: |
+#     curl -sL https://deb.nodesource.com/setup_lts.x | sudo -E bash - && sudo apt-get install -y nodejs
+#     node --version
+#     npm --version
+
+# - name: "Install PM2"
+#   become: true
+#   shell: |
+#     npm i -g pm2
 
 - name: "install dependencies."
   become: true
   apt:
-    name: ["unzip", "curl"]
+    name: ["nodejs", "npm"]
     state: latest
     update_cache: yes
 
-- name: "Install nodejs & npm"
+- name: "install pm2"
   become: true
-  shell: |
-    curl -sL https://deb.nodesource.com/setup_lts.x | sudo -E bash - && sudo apt-get install -y nodejs
-    node --version
-    npm --version
-
-- name: "Install PM2"
-  become: true
-  shell: |
-    npm i -g pm2
+  npm:
+    name: pm2
+    global: yes
+    production: yes
+    state: present
