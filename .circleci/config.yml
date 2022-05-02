@@ -370,7 +370,7 @@ jobs:
             name: Remove old stacks and files
             command: |
               # Fetch the stack names
-              export https://kvdb.io/QNgwY4RzXZUhJzqKNb5zMq/old-workflow-id  -d '${OldWorkflowID}'          
+              export https://kvdb.io/QNgwY4RzXZUhJzqKNb5zMq/old-workflow-id          
               export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
               --stack-status-filter CREATE_COMPLETE --no-paginate --output text)) 
               echo Stack names: "${STACKS[@]}"

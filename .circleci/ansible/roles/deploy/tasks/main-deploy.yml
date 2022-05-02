@@ -64,6 +64,7 @@
     dest: /home/ubuntu
 
 - name: Extract backend
+  become: true
   shell: |
     cd /home/ubuntu
     tar -xzvf artifact.tar.gz
