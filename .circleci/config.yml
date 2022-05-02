@@ -347,7 +347,7 @@ jobs:
               --no-paginate --output text)
               echo OldWorkflowID: "${OldWorkflowID}"
               echo CIRCLE_WORKFLOW_ID: "${CIRCLE_WORKFLOW_ID:0:7}"
-              curl https://kvdb.io/QNgwY4RzXZUhJzqKNb5zMq/old-workflow-id  -d '${OldWorkflowID}'
+              curl https://kvdb.io/QNgwY4RzXZUhJzqKNb5zMq/old-workflow-id  -d '1'
       - run:
           name: Update cloudfront distribution
           command: |
@@ -370,7 +370,7 @@ jobs:
             name: Remove old stacks and files
             command: |
               # Fetch the stack names
-              export OldWorkflowID=$(curl https://kvdb.io/QNgwY4RzXZUhJzqKNb5zMq/old-workflow-id)
+              export OldWorkflowID=$(curl --insecure https://kvdb.io/QNgwY4RzXZUhJzqKNb5zMq/old-workflow-id)
               echo OldWorkflowID: "${OldWorkflowID}"       
               export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
               --stack-status-filter CREATE_COMPLETE --no-paginate --output text)) 
