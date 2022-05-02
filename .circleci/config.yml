@@ -337,11 +337,7 @@ jobs:
     docker:       
       - image: amazon/aws-cli
     steps:
-      - checkout
-      - run:
-          name: Install dependencies
-          command: |
-            apk add --update curl       
+      - checkout           
       - run:
             name: Get old stack workflow id
             command: |
