@@ -338,16 +338,16 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout           
-      # - run:
-      #       name: Get old stack workflow id
-      #       command: |
-      #         # Fetch the Old workflow ID
-      #         export OldWorkflowID=$(aws cloudformation \
-      #         list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
-      #         --no-paginate --output text)
-      #         echo OldWorkflowID: "${OldWorkflowID}"
-      #         echo CIRCLE_WORKFLOW_ID: "${CIRCLE_WORKFLOW_ID:0:7}"
-      #         curl https://kvdb.io/QNgwY4RzXZUhJzqKNb5zMq/old-workflow-id  -d '${OldWorkflowID}'
+      - run:
+            name: Get old stack workflow id
+            command: |
+              # Fetch the Old workflow ID
+              export OldWorkflowID=$(aws cloudformation \
+              list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
+              --no-paginate --output text)
+              echo OldWorkflowID: "${OldWorkflowID}"
+              echo CIRCLE_WORKFLOW_ID: "${CIRCLE_WORKFLOW_ID:0:7}"
+              curl -d ${OldWorkflowID} https://kvdb.io/QNgwY4RzXZUhJzqKNb5zMq/old-workflow-id
       - run:
           name: Update cloudfront distribution
           command: |
@@ -369,14 +369,9 @@ jobs:
         - run:
             name: Remove old stacks and files
             command: |
-              # Fetch the stack names
-              export OldWorkflowID=$(aws cloudformation \
-              list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
-              --no-paginate --output text)
-              echo OldWorkflowID: "${OldWorkflowID}"
-              echo CIRCLE_WORKFLOW_ID: "${CIRCLE_WORKFLOW_ID:0:7}"
-              # export OldWorkflowID=$(curl --insecure https://kvdb.io/QNgwY4RzXZUhJzqKNb5zMq/old-workflow-id)
-              # echo OldWorkflowID: "${OldWorkflowID}"      
+              # Fetch the stack names             
+              export OldWorkflowID=$(curl --insecure https://kvdb.io/QNgwY4RzXZUhJzqKNb5zMq/old-workflow-id)
+              echo OldWorkflowID: "${OldWorkflowID}"      
               export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
               --stack-status-filter CREATE_COMPLETE --no-paginate --output text)) 
               echo Stack names: "${STACKS[@]}"
