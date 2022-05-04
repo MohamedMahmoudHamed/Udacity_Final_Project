@@ -272,6 +272,8 @@ jobs:
           command: |
             apk add --update tar gzip curl nodejs npm ansible zip
             pip install awscli
+      - attach_workspace:
+          at: ~/
       - run:
           name: updating env variables
           command: |
