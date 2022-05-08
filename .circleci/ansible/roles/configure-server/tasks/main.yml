@@ -28,11 +28,6 @@
 #     node --version
 #     npm --version
 
-# - name: "Install PM2"
-#   become: true
-#   shell: |
-#     npm i -g pm2
-
 - name: "install dependencies."
   become: true
   apt:
@@ -40,10 +35,15 @@
     state: latest
     update_cache: yes
 
-- name: "install pm2"
+- name: "Install PM2"
   become: true
-  npm:
-    name: pm2
-    global: yes
-    production: yes
-    state: present
+  shell: |
+    npm i -g pm2
+
+# - name: "install pm2"
+#   become: true
+#   npm:
+#     name: pm2
+#     global: yes
+#     production: yes
+#     state: present
