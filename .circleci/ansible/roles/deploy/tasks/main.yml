@@ -44,18 +44,18 @@
     state: latest
     update_cache: yes
 
-- name: "Add nodejs 13.x"
-  shell: |
-    curl -fsSL https://deb.nodesource.com/setup_13.x | sudo -E bash 
-    sudo apt-get install -y nodejs
+# - name: "Add nodejs 13.x"
+#   shell: |
+#     curl -fsSL https://deb.nodesource.com/setup_13.x | sudo -E bash 
+#     sudo apt-get install -y nodejs
 
-- name: install pm2
-  become: true
-  npm:
-    name: pm2
-    global: yes
-    state: latest
-    production: yes
+# - name: install pm2
+#   become: true
+#   npm:
+#     name: pm2
+#     global: yes
+#     state: latest
+#     production: yes
 
 - name: copy built backend files
   become: true
