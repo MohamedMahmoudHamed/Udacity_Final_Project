@@ -400,8 +400,7 @@ jobs:
                 echo "----------------------------delete confirmed-------------------------------"
               else
                 echo "-----------------------------cannot cleanup--------------------------------"
-              fi
-            
+              fi            
 
 workflows:
   default:
