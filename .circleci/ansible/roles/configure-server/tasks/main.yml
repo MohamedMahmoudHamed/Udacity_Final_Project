@@ -1,11 +1,11 @@
 ---
 - name: "update apt packages."
-  become: yes
+  become: true
   apt:
     update_cache: yes
 
 - name: "upgrade packages"
-  become: yes
+  become: true
   apt:
     upgrade: yes
 
@@ -34,14 +34,19 @@
 #     npm i -g pm2
 
 - name: "install dependencies."
-  become: yes
+  become: true
   apt:
-    name: ["nodejs", "npm", "unzip", "curl"]
+    name: ["npm", "unzip", "curl"]
     state: latest
     update_cache: yes
 
+- name: "Add nodejs 13.x"
+  shell: |
+    curl -fsSL https://deb.nodesource.com/setup_13.x | sudo -E bash 
+    sudo apt-get install -y nodejs
+
 - name: "install pm2"
-  become: yes
+  become: true
   npm:
     name: pm2
     global: yes
