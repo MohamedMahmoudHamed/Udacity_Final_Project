@@ -355,19 +355,14 @@ jobs:
     docker:
       - image: amazon/aws-cli 
     steps:
-      - checkout
-      # - run:
-      #     name: Install dependencies
-      #     command: |
-      #       apk add --update tar gzip curl nodejs npm ansible zip
-      #       pip install awscli
-      # - attach_workspace:
-      #     at: ~/          
+      - checkout        
       - run:
           name: Get old stack workflow id
           command: |
             # Fetch the Old workflow ID
-            export OldWorkflowID=$(aws cloudformation list-exports --query "Exports[?Name==\`WorkflowID\`].Value" --no-paginate --output text)
+            OldWorkflowID=$(aws cloudformation list-exports \
+              --query "Exports[?Name==\`WorkflowID\`].Value" \
+              --no-paginate --output text)
             echo OldWorkflowID: "${OldWorkflowID}"
             echo CIRCLE_WORKFLOW_ID: "${CIRCLE_WORKFLOW_ID:0:7}"
             curl -d ${OldWorkflowID} https://kvdb.io/QNgwY4RzXZUhJzqKNb5zMq/old-workflow-id
