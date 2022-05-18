@@ -344,12 +344,12 @@ jobs:
             then
               return 0
             else
-              return 0
+              return 1
             fi      
-      - destroy-environment:
-          Workflow_ID: ${CIRCLE_WORKFLOW_ID:0:7}
-      - revert-migrations:
-          Workflow_ID: ${CIRCLE_WORKFLOW_ID:0:7}
+      # - destroy-environment:
+      #     Workflow_ID: ${CIRCLE_WORKFLOW_ID:0:7}
+      # - revert-migrations:
+      #     Workflow_ID: ${CIRCLE_WORKFLOW_ID:0:7}
 
   cloudfront-update:
     docker:       
@@ -374,10 +374,10 @@ jobs:
             --stack-name InitialStack \
             --parameter-overrides WorkflowID=${CIRCLE_WORKFLOW_ID:0:7} \
             --tags project=udapeople
-      - destroy-environment:
-          Workflow_ID: ${CIRCLE_WORKFLOW_ID:0:7}
-      - revert-migrations:
-          Workflow_ID: ${CIRCLE_WORKFLOW_ID:0:7}  
+      # - destroy-environment:
+      #     Workflow_ID: ${CIRCLE_WORKFLOW_ID:0:7}
+      # - revert-migrations:
+      #     Workflow_ID: ${CIRCLE_WORKFLOW_ID:0:7}  
 
   cleanup:
       docker:       
@@ -434,5 +434,5 @@ workflows:
           requires: [deploy-backend, deploy-frontend]
       - cloudfront-update:
           requires: [smoke-test]
-      - cleanup:
-          requires: [cloudfront-update]
+      # - cleanup:
+      #     requires: [cloudfront-update]
